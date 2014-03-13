@@ -20,14 +20,14 @@ pkgs = %w{
   libxslt-devel
 }
 
-default['php']['configure_options'] = %W{--prefix=/opt/php-5.5.9
+default['php']['configure_options'] = %W{--prefix=/opt/php/5.5.9
                                             --with-libdir=lib64
-                                            --with-apxs2=/opt/httpd-2.4.7/bin/apxs
+                                            --with-apxs2=/opt/httpd/2.4.7/bin/apxs
                                             --enable-mbstring
                                             --enable-intl
                                             --with-icu-dir=/usr
                                             --with-gettext=/usr
-                                            --with-pcre-regex=/opt/pcre-8.34
+                                            --with-pcre-regex=/opt/pcre/8.34
                                             --with-readline=/usr
                                             --with-libxml-dir=/usr/bin/xml2-config
                                             --enable-soap

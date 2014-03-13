@@ -1,41 +1,36 @@
-lib_dir = node['kernel']['machine'] =~ /x86_64/ ? 'lib64' : 'lib'
-default['php']['conf_dir']      = '/etc'
-default['php']['ext_conf_dir']  = '/etc/php.d'
-default['php']['ext_dir']       = "/usr/#{lib_dir}/php/modules"
-default['php']['prefix_dir']    = "/usr/local/"
+%w{db4-devel, openssl-devel, libjpeg-devel, libpng-devel, freetype-devel, libxml2-devel, libicu-devel, readline-devel, libxslt-devel, libmcrypt-devel}
 
-default['php']['version'] = 'php-5.4.19'
-default['php']['configure_options'] = %W{--prefix=#{php['prefix_dir']}
-                                          --with-libdir=#{lib_dir}
-                                          --with-config-file-path=#{php['conf_dir']}
-                                          --with-config-file-scan-dir=#{php['ext_conf_dir']}
-                                          --with-apxs2=/usr/sbin/apxs
-                                          --with-pear
-                                          --with-zlib
-                                          --with-openssl
-                                          --with-kerberos
-                                          --with-bz2
-                                          --with-curl
-                                          --enable-ftp
-                                          --enable-zip
-                                          --enable-exif
-                                          --with-gd
-                                          --enable-gd-native-ttf
-                                          --with-gettext
-                                          --with-gmp
-                                          --with-mhash
-                                          --with-iconv
-                                          --enable-sockets
-                                          --enable-soap
-                                          --with-xmlrpc
-                                          --with-libevent-dir
-                                          --with-mcrypt
-                                          --enable-mbstring
-                                          --with-t1lib
-                                          --with-mysql
-                                          --with-mysqli=/usr/bin/mysql_config
-                                          --with-mysql-sock
-                                          --with-sqlite3
-                                          --with-pdo-mysql
-                                          --with-pdo-sqlite}
-default['php']['directives'] = {}
+./configure \
+  --prefix=/opt/php-5.5.9 \
+  --with-libdir=lib64 \
+  --with-apxs2=/opt/httpd-2.4.7/bin/apxs \
+  --enable-mbstring \
+  --enable-intl \
+  --with-icu-dir=/usr \
+  --with-gettext=/usr \
+  --with-pcre-regex=/opt/pcre-8.34 \
+  --with-readline=/usr \
+  --with-libxml-dir=/usr/bin/xml2-config \
+  --enable-soap \
+  --enable-wddx \
+  --with-xmlrpc \
+  --with-xsl=/usr \
+  --with-mysql=mysqlnd \
+  --with-mysqli=mysqlnd \
+  --with-pdo-mysql=mysqlnd \
+  --with-pgsql=/opt/postgresql-9.3.3 \
+  --with-pdo-pgsql=/opt/postgresql-9.3.3 \
+  --with-zlib=/usr \
+  --with-zlib-dir=/usr \
+  --enable-dba \
+  --with-db4=/usr \
+  --with-gd \
+  --with-jpeg-dir=/usr \
+  --with-png-dir=/usr \
+  --with-freetype-dir=/usr \
+  --enable-gd-native-ttf \
+  --enable-gd-jis-conv \
+  --with-openssl=/usr \
+  --with-mcrypt=/usr \
+  --enable-bcmath \
+  2>&1 | tee configure_log.txt

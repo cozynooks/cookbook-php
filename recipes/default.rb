@@ -2,44 +2,54 @@
 # Cookbook Name:: php
 # Recipe:: default
 #
-# Copyright 2013, YOUR_COMPANY_NAME
+# Copyright 2014, YOUR_COMPANY_NAME
 #
 # All rights reserved - Do Not Redistribute
 #
-pkgs = value_for_platform_family(
-  ["rhel", "fedora"] => %w{ bzip2-devel libc-client-devel curl-devel freetype-devel gmp-devel libjpeg-devel krb5-devel libmcrypt-devel libpng-devel openssl-devel t1lib-devel mhash-devel },
-  [ "debian", "ubuntu" ] => %w{ libbz2-dev libc-client2007e-dev libcurl4-gnutls-dev libfreetype6-dev libgmp3-dev libjpeg62-dev libkrb5-dev libmcrypt-dev libpng12-dev libssl-dev libt1-dev },
-  "default" => %w{ libbz2-dev libc-client2007e-dev libcurl4-gnutls-dev libfreetype6-dev libgmp3-dev libjpeg62-dev libkrb5-dev libmcrypt-dev libpng12-dev libssl-dev libt1-dev }
-  )
 
-pkgs.each do |pkg|
-  package pkg do
-    action :install
-  end
-end
+pkgs = %w{
+  libxml2-devel
+  openssl-devel
+  db4-devel
+  libjpeg-devel
+  libpng-devel
+  freetype-devel
+  libicu-devel
+  libmcrypt-devel
+  readline-devel
+  libxslt-devel
+}
 
-configure_options = node['php']['configure_options'].join(" ")
+default['php']['configure_options'] = %W{--prefix=/opt/php-5.5.9
+                                            --with-libdir=lib64
+                                            --with-apxs2=/opt/httpd-2.4.7/bin/apxs
+                                            --enable-mbstring
+                                            --enable-intl
+                                            --with-icu-dir=/usr
+                                            --with-gettext=/usr
+                                            --with-pcre-regex=/opt/pcre-8.34
+                                            --with-readline=/usr
+                                            --with-libxml-dir=/usr/bin/xml2-config
+                                            --enable-soap
+                                            --enable-wddx
+                                            --with-xmlrpc
+                                            --with-xsl=/usr
+                                            --with-mysql=mysqlnd
+                                            --with-mysqli=mysqlnd
+                                            --with-pdo-mysql=mysqlnd
+                                            --with-pgsql=/opt/postgresql-9.3.3 \
+                                            --with-pdo-pgsql=/opt/postgresql-9.3.3 \
+                                            --with-zlib=/usr
+                                            --with-zlib-dir=/usr
+                                            --enable-dba
+                                            --with-db4=/usr
+                                            --with-gd
+                                            --with-jpeg-dir=/usr
+                                            --with-png-dir=/usr
+                                            --with-freetype-dir=/usr
+                                            --enable-gd-native-ttf
+                                            --enable-gd-jis-conv
+                                            --with-openssl=/usr
+                                            --with-mcrypt=/usr
+                                            --enable-bcmath}
 
-version = node['php']['version']
-
-cookbook_file "#{node['php']['src_dir']}#{node['php']['version']}.tar.gz" do
-  mode 0644
-end
-
-bash "build php" do
-  cwd node['php']['src_dir']
-  code <<-EOF
-  tar -zxvf #{version}.tar.gz
-  (cd #{version} && ./configure #{configure_options})
-  (cd #{version} && make && make install)
-  EOF
-  # not_if "which php"
-end
-
-template "#{node['php']['conf_dir']}/php.ini" do
-  source "php.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  variables(:directives => node['php']['directives'])
-end
